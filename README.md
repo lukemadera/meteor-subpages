@@ -16,7 +16,7 @@ It's a bit less opinionated than other steps / wizards packages which tend to be
 
 [Demo](http://beteal.org/org-edit)
 
-[Source](https://github.com/lukemadera/meteor-packages/tree/master/subpages/basic)
+[Source](https://github.com/lukemadera/beteal/tree/master/organization/org-edit)
 
 
 ## Dependencies
@@ -30,12 +30,6 @@ In a Meteor app directory:
 ```bash
 meteor add lukemadera:subpages
 ```
-
-Add / include (or customize) .less files:
-
-- `subpages.import.less`
-- `subpages-header.import.less`
-- `subpages-progress.import.less`
 
 
 ## Usage
@@ -85,8 +79,7 @@ if(Meteor.isClient) {
 }
 ```
 
-Then style as needed.
-Can include the `*.import.less` file(s) for default styles.
+Then style as needed (see the .less files for class names / styles to customize / override)
 
 
 ### API
