@@ -18,8 +18,8 @@ lmSubpagesPrivate.inst ={};
 /**
 @param {String} direction One of 'prev', 'next'
 @param {Object} params
-  @param {Object} [templateInst] One of 'templateInst' or 'instid' is required
-  @param {Object} [instid] One of 'templateInst' or 'instid' is required
+  @param {Object} [templateInst] (for internal use) One of 'templateInst' or 'instid' is required
+  @param {Object} [instid] The opts.instid passed in with the template options (for external use)
 @return {Object}
   @param {Boolean} valid True if went to the prev or next page (will be false if at beginning or end already)
 */
@@ -59,8 +59,8 @@ lmSubpages.nav =function(direction, params) {
   @param {Number} [index] The page index to go to (best for performance)
   @param {String} [key] The page key to go to
 @param {Object} params
-  @param {Object} [templateInst] One of 'templateInst' or 'instid' is required
-  @param {Object} [instid] One of 'templateInst' or 'instid' is required
+  @param {Object} [templateInst] (for internal use) One of 'templateInst' or 'instid' is required
+  @param {Object} [instid] The opts.instid passed in with the template options (for external use)
 */
 lmSubpages.goToPage =function(pageInfo, params) {
   var templateInst =false;
@@ -76,20 +76,24 @@ lmSubpages.goToPage =function(pageInfo, params) {
     var curPage =false;
     var oldPage =templateInst.curPage.get();
     var pages =templateInst.data.pages;
+    var pageIndex;
     if(pageInfo.index !==undefined) {
       curPage =pages[pageInfo.index];
+      pageIndex =pageInfo.index;
     }
     else if(pageInfo.key !==undefined) {
       var ii;
       for(ii =0; ii<pages.length; ii++) {
         if(pages[ii].key !==undefined && pages[ii].key ===pageInfo.key) {
           curPage =pages[ii];
+          pageIndex =ii;
           break;
         }
       }
     }
     else {
       curPage =pages[0];
+      pageIndex =0;
     }
     if(curPage) {
       if(curPage.link !==undefined) {
@@ -107,11 +111,31 @@ lmSubpages.goToPage =function(pageInfo, params) {
       else if(curPage.template !==undefined) {
         templateInst.curPage.set(curPage);
       }
+
+      lmSubpagesPrivate.updatePagesState(templateInst, pageIndex, {});
     }
   }
 };
 
 
+
+lmSubpagesPrivate.updatePagesState =function(templateInst, pageIndex, params) {
+  var pages =templateInst.data.pages;
+  var ii;
+  for(ii =0; ii<pages.length; ii++) {
+    if(ii <pageIndex) {
+      pages[ii].xDisplay.classes.state ='past';
+    }
+    else if(ii ===pageIndex) {
+      pages[ii].xDisplay.classes.state ='current';
+    }
+    else {
+      pages[ii].xDisplay.classes.state ='future';
+    }
+  }
+  templateInst.data.pages =pages;
+  templateInst.pagesFormatted.set(pages);
+};
 
 lmSubpagesPrivate.init =function(templateInst, params) {
   var self =this;
@@ -160,6 +184,11 @@ lmSubpagesPrivate.init =function(templateInst, params) {
       if(pages[ii].atts ===undefined) {
         pages[ii].atts ={};
       }
+      pages[ii].xDisplay ={
+        classes: {
+          state: ''
+        }
+      }
     }
 
     templateInst.data.pages =pages;
@@ -204,7 +233,9 @@ lmSubpagesPrivate.initOpts =function(templateInst, params) {
     templates: {
       headerPrev: 'lmSubpagesHeaderPrev',
       headerNext: 'lmSubpagesHeaderNext'
-    }
+    },
+    showHeader: true,
+    showProgress: true
   };
   var xx;
   //extend
@@ -252,6 +283,7 @@ Template.lmSubpages.created =function() {
 
   this.curPage =new ReactiveVar(false);
   this.opts =new ReactiveVar({});
+  this.pagesFormatted =new ReactiveVar([]);
 };
 
 Template.lmSubpages.rendered =function() {
@@ -265,6 +297,9 @@ Template.lmSubpages.destroyed =function() {
 Template.lmSubpages.helpers({
   opts: function() {
     return Template.instance().opts.get();
+  },
+  pagesFormatted: function() {
+    return Template.instance().pagesFormatted.get();
   },
   curPage: function() {
     return Template.instance().curPage.get();
@@ -295,6 +330,9 @@ Template.lmSubpages.events({
   },
   'click .lm-subpages-header-title': function(evt, template) {
     lmSubpages.goToPage({index:0}, {templateInst:template});
+  },
+  'click .lm-subpages-progress-item': function(evt, template) {
+    lmSubpages.goToPage({index:this.pageIndex}, {templateInst:template});
   }
 });
 

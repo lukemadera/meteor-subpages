@@ -1,0 +1,23 @@
+.lm-subpages-progress {
+  border-bottom: solid 1px rgb(150,150,150);
+  background-color: white;
+  position: fixed;
+  z-index: 9999;
+  height: 20px;
+}
+.lm-subpages-progress-spacer {
+  height: 20px;
+}
+
+.lm-subpages-progress-item {
+  cursor: pointer;
+}
+.lm-subpages-progress-item:not(:last-child) {
+  border-right: solid 1px rgb(150,150,150);
+}
+.lm-subpages-progress-item.past {
+  background-color: rgb(210,210,210);
+}
+.lm-subpages-progress-item.current {
+  background-color: rgb(170,170,170);
+}

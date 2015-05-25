@@ -2,6 +2,15 @@
 
 Steps / Wizard for combining multiple pages / templates into a series of sub pages.
 
+Has (optional / customizable) header with page title and next and previous arrows as well as clickable progress bar to show all steps and allow navigating to a specific one.
+
+Javascript API also allows navigating forward or backward or to a specific page (by array index or key name) so this can be used with custom elements (i.e. a form submit button) to trigger going to the next / a specific page.
+
+
+## Why?
+
+It's a bit less opinionated than other steps / wizards packages which tend to be tied to forms specifically. This steps / subpages / wizard can be used with forms but can just as easily be used without forms. So for example, the same (or similar) code / display can be used for admins to edit form inputs and for non-admins to view the pages. Or it can be used separate from forms entirely (basically can display any content you set in the template).
+
 
 ## Demo
 
@@ -21,6 +30,12 @@ In a Meteor app directory:
 ```bash
 meteor add lukemadera:subpages
 ```
+
+Add / include (or customize) .less files:
+
+- `subpages.import.less`
+- `subpages-header.import.less`
+- `subpages-progress.import.less`
 
 
 ## Usage
@@ -62,6 +77,8 @@ if(Meteor.isClient) {
         // },
         // defaultPageKey: 'basic',   //the page to start on (by key)
         // defaultPageIndex: 1    //the page to start on (by index)
+        // showHeader: false,
+        // showProgress: false
       };
     }
   });
@@ -69,7 +86,7 @@ if(Meteor.isClient) {
 ```
 
 Then style as needed.
-Can include the `subpages.import.less` file for default styles.
+Can include the `*.import.less` file(s) for default styles.
 
 
 ### API
@@ -78,8 +95,7 @@ Can include the `subpages.import.less` file for default styles.
 /**
 @param {String} direction One of 'prev', 'next'
 @param {Object} params
-  @param {Object} [templateInst] One of 'templateInst' or 'instid' is required
-  @param {Object} [instid] One of 'templateInst' or 'instid' is required
+  @param {Object} [instid] The opts.instid passed in with the template options
 @return {Object}
   @param {Boolean} valid True if went to the prev or next page (will be false if at beginning or end already)
 */
@@ -91,8 +107,7 @@ var retNav =lmSubpages.nav(direction, params);
   @param {Number} [index] The page index to go to (best for performance)
   @param {String} [key] The page key to go to
 @param {Object} params
-  @param {Object} [templateInst] One of 'templateInst' or 'instid' is required
-  @param {Object} [instid] One of 'templateInst' or 'instid' is required
+  @param {Object} [instid] The opts.instid passed in with the template options
 */
 lmSubpages.goToPage(pageInfo, params);
 ```
