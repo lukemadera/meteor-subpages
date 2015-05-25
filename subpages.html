@@ -1,0 +1,47 @@
+<template name='lmSubpages'>
+
+  <div class='flexbox lm-subpages-header'>
+    <div class='lm-subpages-header-arrow lm-subpages-prev'>
+      {{#if hasPrevNextPage.prev}}
+        {{> Template.dynamic template=opts.templates.headerPrev}}
+      {{else}}
+      &nbsp;
+      {{/if}}
+    </div>
+    <div class='flex1 h3 lm-subpages-header-title-cont'><span class='lm-subpages-header-title'>{{curPage.title}}</span></div>
+    <div class='lm-subpages-header-arrow lm-subpages-next'>
+      {{#if hasPrevNextPage.next}}
+        {{> Template.dynamic template=opts.templates.headerNext}}
+      {{else}}
+      &nbsp;
+      {{/if}}
+    </div>
+  </div>
+  <div class='lm-subpages-header-spacer'>&nbsp;</div>
+  
+  {{#if curPage}}
+    {{> Template.dynamic template=curPage.template data=curPage.atts}}
+  {{/if}}
+
+  <!-- <div class='flexbox'>
+    <div class='btn-link margin-lr lm-subpages-prev'>Previous</div>
+    <div class='flex1'>&nbsp;</div>
+    <div class='btn-link margin-lr lm-subpages-next'>Next</div>
+  </div> -->
+</template>
+
+<template name='lmSubpagesContents'>
+  {{#each pages}}
+    <div class='lm-subpages-contents-page'>
+      {{title}}
+    </div>
+  {{/each}}
+</template>
+
+<template name='lmSubpagesHeaderPrev'>
+  <i class='fa fa-arrow-left'></i>
+</template>
+
+<template name='lmSubpagesHeaderNext'>
+  <i class='fa fa-arrow-right'></i>
+</template>
